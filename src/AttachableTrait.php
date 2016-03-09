@@ -197,17 +197,18 @@ trait AttachableTrait
         $attach = $this->createAttachesModel()->firstOrNew([
             'filename'      => $filename,
             'namespace' => $this->getEntityClassName(),
-            'alt' => $alt,
-            'desc' => $desc,
-            'title' => $title,
+            'alt' => trim($alt),
+            'desc' => trim($desc),
+            'title' => trim($title),
         ]);
 
         if (! $attach->exists) {
             $info = pathinfo($filename);
-            if(! $alt) {
-                $cleanName = basename($filename,'.'.$info['extension']);
-                $attach->alt = $cleanName;
-            }
+            
+//            if(! $alt) {
+//                $cleanName = basename($filename,'.'.$info['extension']);
+//                $attach->alt = $cleanName;
+//            }
 
             $newFileName = md5(date('Y-m-d-s').$filename).'.'.$info['extension'];
             $attach->filename = $path.$newFileName;
