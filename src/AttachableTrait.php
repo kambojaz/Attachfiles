@@ -220,9 +220,11 @@ trait AttachableTrait
             unlink(public_path($filename));
         }
 
-        if (! $this->attaches->contains($attach->id)) {
+        if (!$this->attaches->contains($attach->id)) {
             $this->attaches()->attach($attach);
         }
+        
+        return $attach->id;
     }
 
 
@@ -231,6 +233,8 @@ trait AttachableTrait
      */
     public function updateOrNewAttach($filename, $title=null, $alt=null, $desc=null)
     {
+        $id = null;
+        
         if(Storage::exists($filename)){
             $namespace = $this->getEntityClassName();
 
@@ -250,10 +254,16 @@ trait AttachableTrait
                 $attach->alt=$alt;
                 $attach->desc=$desc;
                 $attach->save();
+                
+                $id = $attach->id;
             }
         }
-
-        else $this->addAttach($filename, $title, $alt, $desc);
+        else {
+            
+            $id = $this->addAttach($filename, $title, $alt, $desc);
+        }
+        
+        return $id;
     }
 
 
