@@ -147,7 +147,7 @@ class IlluminateAttach extends Model
         
         if($this->crop) {
             
-            $crop = json_decode($this->crop);
+            $crop = (object) $this->crop;
             
             $appender = '/' . $crop->width . '/' . $crop->height . '/crop/' . $crop->scale . '/' . $crop->x . '/' . $crop->y;
         }
