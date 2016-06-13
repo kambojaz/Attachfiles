@@ -236,6 +236,7 @@ trait AttachableTrait
         $id = null;
         
         if(Storage::exists($filename)){
+            
             $namespace = $this->getEntityClassName();
 
             $attach = $this
@@ -266,7 +267,38 @@ trait AttachableTrait
         return $id;
     }
 
+    
+    /**
+     * Add crop data to attach
+     */
+    public function setAttachCropData($filename, $cropdata)
+    {
+        $id = null;
+        
+        if(Storage::exists($filename)){
 
+            $namespace = $this->getEntityClassName();
+
+            $attach = $this
+                ->createAttachesModel()
+                ->whereNamespace($namespace)
+                ->where('filename', $filename)
+                ->first()
+                ;
+
+            if ($attach) {
+                
+                $attach->crop = is_array($cropdata) ? $cropdata : json_decode($cropdata);
+                $attach->save();
+
+                $id = $attach->id;
+            }
+        }
+        
+        return $id;
+    }
+
+    
 
     /**
      * {@inheritdoc}

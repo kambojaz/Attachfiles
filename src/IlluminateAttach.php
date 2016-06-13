@@ -40,11 +40,18 @@ class IlluminateAttach extends Model
      */
     protected $fillable = [
         'filename',
+        'crop',
         'title',
         'alt',
         'desc',
         'namespace',
     ];
+    
+    
+    protected $casts = [
+        'crop' => 'array',
+    ];
+    
 
     /**
      * The attached entities model.
@@ -129,4 +136,23 @@ class IlluminateAttach extends Model
     {
         static::$attachedModel = $attachedModel;
     }
+    
+    
+    
+    /* Get / Set Attribute */
+    
+    public function getCroppedAttribute() {
+        
+        $appender = '';
+        
+        if($this->crop) {
+            
+            $crop = json_decode($this->crop);
+            
+            $appender = '/' . $crop->width . '/' . $crop->height . '/crop/' . $crop->scale . '/' . $crop->x . '/' . $crop->y;
+        }
+        
+        return $this->filename . $appender;
+    }
+    
 }
