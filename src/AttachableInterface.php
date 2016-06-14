@@ -135,7 +135,7 @@ interface AttachableInterface
      * @param null $desc
      * @return mixed
      */
-    public function addAttach($filename, $title = null, $alt=null, $desc=null);
+    public function addAttach($filename, $priority = 0);
 
 
     /**
@@ -147,7 +147,7 @@ interface AttachableInterface
      * @param null $desc
      * @return mixed
      */
-    public function updateOrNewAttach($filename, $title = null, $alt=null, $desc=null);
+    public function updateOrNewAttach($filename, $priority = 0);
 
 
 

@@ -190,16 +190,14 @@ trait AttachableTrait
     /**
      * {@inheritdoc}
      */
-    public function addAttach($filename, $title=null, $alt=null, $desc=null)
+    public function addAttach($filename, $priority = 0)
     {
         $path='attaches/'.date ('Y-m-d').'/';
 
         $attach = $this->createAttachesModel()->firstOrNew([
             'filename'      => $filename,
             'namespace' => $this->getEntityClassName(),
-            'alt' => trim($alt),
-            'desc' => trim($desc),
-            'title' => trim($title),
+            'priority' => $priority
         ]);
 
         if (! $attach->exists) {
@@ -231,7 +229,7 @@ trait AttachableTrait
     /**
      * {@inheritdoc}
      */
-    public function updateOrNewAttach($filename, $title=null, $alt=null, $desc=null)
+    public function updateOrNewAttach($filename, $priority = 0)
     {
         $id = null;
         
@@ -251,9 +249,7 @@ trait AttachableTrait
             ;
 
             if ($attach) {
-                $attach->title=$title;
-                $attach->alt=$alt;
-                $attach->desc=$desc;
+                $attach->priority = $priority;
                 $attach->save();
                 
                 $id = $attach->id;
@@ -261,7 +257,7 @@ trait AttachableTrait
         }
         else {
             
-            $id = $this->addAttach($filename, $title, $alt, $desc);
+            $id = $this->addAttach($filename, $priority);
         }
         
         return $id;
@@ -327,12 +323,7 @@ trait AttachableTrait
         $attach = $this
             ->createAttachesModel()
             ->whereNamespace($namespace)
-            ->where(function ($query) use ($name) {
-                $query
-                    ->orWhere('title', $name)
-                    ->orWhere('filename', $name)
-                ;
-            })
+            ->where('filename', $name)
             ->first()
         ;
         if ($attach) {

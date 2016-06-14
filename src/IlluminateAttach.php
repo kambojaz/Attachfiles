@@ -60,6 +60,17 @@ class IlluminateAttach extends Model
      */
     protected static $attachedModel = 'Angrydeer\Attachfiles\IlluminateAttached';
 
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('priority', function(Builder $builder) {
+            $builder->orderBy('priority');
+        });
+    }
+    
+    
     /**
      * {@inheritdoc}
      */
