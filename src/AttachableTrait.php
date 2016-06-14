@@ -209,7 +209,11 @@ trait AttachableTrait
 //            }
 
             $newFileName = md5(date('Y-m-d-s').$filename).'.'.$info['extension'];
+            
             $attach->filename = $path.$newFileName;
+            
+            $attach->priority = $priority;
+            
             Storage::put(
                 $path.$newFileName,
                 file_get_contents(public_path($filename))
