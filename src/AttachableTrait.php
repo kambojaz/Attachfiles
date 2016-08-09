@@ -23,6 +23,7 @@ namespace Angrydeer\Attachfiles;
 use Illuminate\Database\Eloquent\Builder;
 use File;
 use Storage;
+use Image;
 
 trait AttachableTrait
 {
@@ -200,13 +201,15 @@ trait AttachableTrait
             'priority' => $priority
         ]);
 
-        if (! $attach->exists) {
+        if (!$attach->exists) {
             $info = pathinfo($filename);
             
-//            if(! $alt) {
-//                $cleanName = basename($filename,'.'.$info['extension']);
-//                $attach->alt = $cleanName;
-//            }
+            $file = Image::make(public_path($filename))
+                ->resize(2000, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })
+                ->save()
+                ;
 
             $newFileName = md5(date('Y-m-d-s').$filename).'.'.$info['extension'];
             
@@ -218,7 +221,11 @@ trait AttachableTrait
                 $path.$newFileName,
                 file_get_contents(public_path($filename))
             );
+            
+            $attach->size = $file->width() . 'x' . $file->height();
+            
             $attach->save();
+            
             unlink(public_path($filename));
         }
 
@@ -332,6 +339,10 @@ trait AttachableTrait
         ;
         if ($attach) {
             $this->attaches()->detach($attach);
+            
+            if (Storage::exists($attach->filename)) Storage::delete($attach->filename);
+            
+            $attach->delete();
         }
     }
 
