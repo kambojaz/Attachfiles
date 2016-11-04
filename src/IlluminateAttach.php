@@ -149,6 +149,31 @@ class IlluminateAttach extends Model
     }
     
     
+    /**
+     * Return cropped filepath
+     *
+     * Default path appender
+     * 
+     * @param  string  $default
+     * @return void
+     */
+    public function getCropped($default = null) {
+
+        if($this->crop) {
+
+            $crop = (object) $this->crop;
+
+            $appender = $crop->width . '/' . $crop->height . '/crop/' . $crop->scale . '/' . $crop->x . '/' . $crop->y;
+            
+            return $this->filename . '/' . $appender;
+        }
+        
+        if($default)
+            return $this->filename . '/' . $default;
+        
+        return $this->filename;
+    }
+    
     
     /* Get / Set Attribute */
     
