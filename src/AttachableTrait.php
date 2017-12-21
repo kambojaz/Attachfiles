@@ -191,12 +191,15 @@ trait AttachableTrait
     /**
      * {@inheritdoc}
      */
-    public function addAttach($filename, $priority = 0)
+    public function addAttach($filename, $title = null, $alt = null, $description = null, $priority = 0)
     {
         $path='attaches/'.date ('Y-m-d').'/';
 
         $attach = $this->createAttachesModel()->firstOrNew([
             'filename'      => $filename,
+            'title' => $title,
+            'alt' => $alt,
+            'desc' => $description,
             'namespace' => $this->getEntityClassName(),
             'priority' => $priority
         ]);
@@ -240,10 +243,11 @@ trait AttachableTrait
     /**
      * {@inheritdoc}
      */
-    public function updateOrNewAttach($filename, $priority = 0)
+    public function updateOrNewAttach($filename, $title = null, $alt = null, $description = null, $priority = 0)
     {
         $id = null;
         
+
         if(Storage::exists($filename)){
             
             $namespace = $this->getEntityClassName();
@@ -261,6 +265,9 @@ trait AttachableTrait
 
             if ($attach) {
                 $attach->priority = $priority;
+                $attach->title = $title;
+                $attach->alt = $alt;
+                $attach->desc = $description;
                 $attach->save();
                 
                 $id = $attach->id;
@@ -268,7 +275,7 @@ trait AttachableTrait
         }
         else {
             
-            $id = $this->addAttach($filename, $priority);
+            $id = $this->addAttach($filename, $title, $alt, $description, $priority);
         }
         
         return $id;
